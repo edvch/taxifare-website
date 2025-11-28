@@ -59,7 +59,6 @@ params = {'pickup_datetime':pickup_datetime,
           'passenger_count':passenger_count
 }
 
-response = requests.get(url, params=params)
-
-print(response.status_code)
-st.write("**Prediction**", response.json()['fare'])
+if st.button("Predict", type="primary"):
+    response = requests.get(url, params=params)
+    st.write('**Prediction result:**', response.json()['fare'])
