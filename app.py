@@ -4,11 +4,10 @@ import requests
 import datetime
 
 '''
-# TaxiFareModel website
+# NYC taxi fare
 '''
 
-# pickup_datetime = st.text_input('Insert taxi pickup date and time', '2014-07-06 19:18:00')
-d = st.date_input("When's your birthday", datetime.date(2014, 7, 6))
+d = st.date_input("Insert taxi pickup date and time", datetime.date(2014, 7, 6))
 if d != "":
     st.write("The pickup date is", d)
 
@@ -49,7 +48,7 @@ url = 'https://taxifare.lewagon.ai/predict'
 
 #     st.markdown('Maybe you want to use your own API for the prediction, not the one provided by Le Wagon...')
 '''
-## User prediction
+## Ride price
 '''
 
 pickup_datetime = str(d) + ' ' + str(t)
@@ -62,6 +61,9 @@ params = {'pickup_datetime':pickup_datetime,
           'passenger_count':passenger_count
 }
 
-if st.button("Predict", type="primary"):
+if st.button("How much it will cost?"):
     response = requests.get(url, params=params)
-    st.write('**Prediction result:**', response.json()['fare'])
+    predicted_price = round(float(response.json()['fare']), 2)
+    st.badge(f'{predicted_price} $', color="green")
+    st.markdown("[![Click me](./app/static/terry_crews_taxi.gif)](https://streamlit.io)")
+    st.audio("Tokyo_Drift.mp3", format="audio/mpeg", loop=True, autoplay=True)
