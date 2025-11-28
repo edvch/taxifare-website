@@ -1,46 +1,47 @@
 import streamlit as st
 import pandas as pd
 import requests
+import datetime
 
 '''
-# TaxiFareModel front
+# TaxiFareModel website
 '''
 
-st.markdown('''
-Remember that there are several ways to output content into your web page...
+# pickup_datetime = st.text_input('Insert taxi pickup date and time', '2014-07-06 19:18:00')
+d = st.date_input("When's your birthday", datetime.date(2014, 7, 6))
+if d != "":
+    st.write("The pickup date is", d)
 
-Either as with the title by just creating a string (or an f-string). Or as with this paragraph using the `st.` functions
-''')
+t = st.time_input("Set an alarm for", value='19:00')
+if t != "":
+    st.write("The pickup time is", t)
 
-pickup_datetime = st.text_input('Insert taxi pickup date and time', '2014-07-06 19:18:00')
-if pickup_datetime != "":
-    st.write("The pickup date is", pickup_datetime)
-    #pickup_datetime = pd.Timestamp(pickup_datetime, tz='US/Eastern')
-
-pickup_long = st.text_input('Insert taxi pickup longitude', '-73.950655')
-if pickup_long != "":
-    st.write("The pickup longitude is", pickup_long)
-    pickup_long = float(pickup_long)
-
-pickup_lat = st.text_input('Insert taxi pickup latitude', '40.783282')
-if pickup_lat != "":
-    st.write("The pickup latitude is", pickup_lat)
-    pickup_lat = float(pickup_lat)
-
-dropoff_long = st.text_input('Insert taxi dropoff longitude', '-73.984365')
-if dropoff_long != "":
-    st.write("The dropoff longitude is", dropoff_long)
-    dropoff_long = float(dropoff_long)
-
-dropoff_lat = st.text_input('Insert taxi dropoff latitude', '40.769802')
-if dropoff_lat != "":
-    st.write("The dropoff latitude is", dropoff_lat)
-    dropoff_lat = float(dropoff_lat)
-
-passenger_count = st.text_input('Insert the number of passenger', '2')
+passenger_count = st.slider("How many passenger?", 1, 8, 1)
 if passenger_count != "":
     st.write("The number of passenger is", passenger_count)
     passenger_count = int(passenger_count)
+
+col1, col2 = st.columns(2)
+
+pickup_long = col1.number_input('Insert taxi pickup longitude', -73.950655, key='plong')
+if pickup_long != "":
+    pickup_long = float(pickup_long)
+
+pickup_lat = col2.number_input('Insert taxi pickup latitude', 40.783282, key='plat')
+if pickup_lat != "":
+    pickup_lat = float(pickup_lat)
+
+col3, col4 = st.columns(2)
+dropoff_long = col3.number_input('Insert taxi dropoff longitude', -73.984365, key='dlong')
+if dropoff_long != "":
+    dropoff_long = float(dropoff_long)
+
+dropoff_lat = col4.number_input('Insert taxi dropoff latitude', 40.769802, key='dlat')
+if dropoff_lat != "":
+    dropoff_lat = float(dropoff_lat)
+
+map = pd.DataFrame([[pickup_lat, pickup_long], [dropoff_lat, dropoff_long]], columns=['lat', 'lon'])
+st.map(map, zoom=12)
 
 url = 'https://taxifare.lewagon.ai/predict'
 
@@ -50,6 +51,8 @@ url = 'https://taxifare.lewagon.ai/predict'
 '''
 ## User prediction
 '''
+
+pickup_datetime = str(d) + ' ' + str(t)
 
 params = {'pickup_datetime':pickup_datetime,
           'pickup_longitude':pickup_long,
